@@ -3,10 +3,16 @@ pipeline {
 
     stages {
             stage('Build'){
-                    steps {
+                        steps {
                         git 'https://github.com/AnasHouissa/DevopsProjectBackend.git'
                         sh 'mvn clean compile'
                     }
             }
+
+            stage('Test'){
+                         steps {
+                              sh 'mvn test'
+                                }
+                        }
     }
 }
