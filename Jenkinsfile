@@ -1,9 +1,10 @@
 pipeline {
+
     agent any
 
     stages {
             stage('Build'){
-                        steps {
+                    steps {
                         git 'https://github.com/AnasHouissa/DevopsProjectBackend.git'
                         sh 'chmod +x mvnw'
                         sh './mvnw clean compile'
@@ -11,9 +12,9 @@ pipeline {
             }
 
             stage('Test'){
-                         steps {
-                              sh './mvnw test -f pom.xml'
-                                }
-                        }
+                     steps {
+                              sh './mvnw test'
+                     }
+            }
     }
 }
