@@ -5,13 +5,13 @@ pipeline {
             stage('Build'){
                         steps {
                         git 'https://github.com/AnasHouissa/DevopsProjectBackend.git'
-                        sh 'mvn clean compile'
+                        sh './mvnw clean compile'
                     }
             }
 
             stage('Test'){
                          steps {
-                              sh 'mvn test'
+                              sh './mvnw test'
                                 }
                         }
     }
