@@ -21,7 +21,6 @@ pipeline {
                              success {
                                  jacoco(
                                      execPattern: '**/target/*.exec',
-                                     
                                  )
                              }
                          }
