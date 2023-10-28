@@ -5,7 +5,7 @@ pipeline {
             stage('Build'){
                     steps {
                         git 'https://github.com/AnasHouissa/DevopsProjectBackend.git'
-                        bat '.\mvnw clean compile'
+                        sh './mvnw clean compile'
                     }
             }
     }
