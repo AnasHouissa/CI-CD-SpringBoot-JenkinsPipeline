@@ -19,6 +19,7 @@ import tn.esprit.devops_project.entities.Stock;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -45,14 +46,24 @@ class OperatorServiceImplTest {
 
     @Test
     @DatabaseSetup("/data-set/operator-data.xml")
-    void retrieveStock() {
+    void retrieveOperator() {
         final Operator op = this.operatorService.retrieveOperator(1L);
         assertEquals("fname 1", op.getFname());
     }
 
     @Test
     @DatabaseSetup("/data-set/operator-data.xml")
-    void retrieveAllStock() {
+    void retrieveOperatorNotFound() {
+        assertThrows(NullPointerException.class, () -> {
+            this.operatorService.retrieveOperator(7L);
+        });
+    }
+
+
+
+    @Test
+    @DatabaseSetup("/data-set/operator-data.xml")
+    void retrieveAllOperator() {
         final List<Operator> allOperator = this.operatorService.retrieveAllOperators();
         assertEquals(allOperator.size(), 1);
 

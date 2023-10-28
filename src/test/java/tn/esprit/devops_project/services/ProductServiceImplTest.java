@@ -21,6 +21,7 @@ import tn.esprit.devops_project.entities.Stock;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -38,7 +39,6 @@ class ProductServiceImplTest {
 
    @Test
     @DatabaseSetup({"/data-set/product-data.xml", "/data-set/stock-data.xml"})
-   @Order(1)
     void addProduct() {
         final Product product = new Product();
         product.setTitle("Product 2");
@@ -48,6 +48,19 @@ class ProductServiceImplTest {
         this.productService.addProduct(product,1L);
         assertEquals(this.productService.retreiveAllProduct().size(),2);
         assertEquals(this.productService.retrieveProduct(product.getIdProduct()).getTitle(),"Product 2");
+    }
+
+    @Test
+    @DatabaseSetup({"/data-set/product-data.xml", "/data-set/stock-data.xml"})
+    void addProductStockNotFound() {
+        final Product product = new Product();
+        product.setTitle("Product 2");
+        product.setCategory(ProductCategory.CLOTHING);
+        product.setPrice(20f);
+        product.setQuantity(30);
+        assertThrows(NullPointerException.class, () -> {
+            this.productService.addProduct(product, 7L);
+        });
     }
 
     @Test
@@ -61,6 +74,16 @@ class ProductServiceImplTest {
     void retreiveProduct() {
         final Product product = this.productService.retrieveProduct(1L);
         assertEquals(product.getTitle(), "product 1");
+
+    }
+
+    @Test
+    @DatabaseSetup("/data-set/product-data.xml")
+    void retreiveProductNotFound() {
+
+        assertThrows(NullPointerException.class, () -> {
+            this.productService.retrieveProduct(7L);
+        });
 
     }
 

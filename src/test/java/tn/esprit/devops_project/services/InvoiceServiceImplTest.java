@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -48,6 +49,14 @@ class InvoiceServiceImplTest {
 
     @Test
     @DatabaseSetup("/data-set/invoice-data.xml")
+    void cancelInvoiceNotFound() {
+        assertThrows(NullPointerException.class, () -> {
+            this.invoiceService.cancelInvoice(7L);
+        });
+    }
+
+    @Test
+    @DatabaseSetup("/data-set/invoice-data.xml")
     void retrieveAllInvoices() {
         final List<Invoice> allInvoices = this.invoiceService.retrieveAllInvoices();
         assertEquals(allInvoices.size(), 1);
@@ -61,28 +70,53 @@ class InvoiceServiceImplTest {
         assertEquals(invoice.getAmountInvoice(), 100f);
     }
 
-    /*  @Test
-      @DatabaseSetup({"/data-set/invoice-data.xml","/data-set/supplier-data.xml"})
-      void getInvoicesBySupplier() {
-          final Invoice invoice = new Invoice();
-          invoice.setSupplier(this.supplierService.retrieveSupplier(1L));
-          assertEquals(this.invoiceService.getInvoicesBySupplier(1L).size(), 1);
-      }
-  */
+
+    @Test
+    @DatabaseSetup("/data-set/invoice-data.xml")
+    void retrieveInvoiceNotFound() {
+        assertThrows(NullPointerException.class, () -> {
+            this.invoiceService.retrieveInvoice(7L);
+        });
+    }
+
+    @Test
+    @DatabaseSetup({"/data-set/invoice-data.xml", "/data-set/supplier-data.xml"})
+    void getInvoicesBySupplierNotFound() {
+        assertThrows(NullPointerException.class, () -> {
+            this.invoiceService.getInvoicesBySupplier(7L);
+        });
+    }
+
+    @Test
+    @DatabaseSetup({"/data-set/invoice-data.xml", "/data-set/supplier-data.xml"})
+    void getInvoicesBySupplier() {
+        assertEquals(this.invoiceService.getInvoicesBySupplier(1L).size(), 0);
+    }
+
     @Test
     @DatabaseSetup({"/data-set/invoice-data.xml", "/data-set/operator-data.xml"})
     void assignOperatorToInvoice() {
         this.invoiceService.assignOperatorToInvoice(1L, 1L);
         assertEquals(this.operatorService.retrieveOperator(1L).getInvoices().size(), 1);
     }
+    @Test
+    @DatabaseSetup({"/data-set/invoice-data.xml", "/data-set/operator-data.xml"})
+    void assignOperatorToInvoiceNotFoundOperatorAndInvoice() {
+        assertThrows(NullPointerException.class, () -> {
+            this.invoiceService.assignOperatorToInvoice(7L,1L);
+        });
+        assertThrows(NullPointerException.class, () -> {
+            this.invoiceService.assignOperatorToInvoice(1L,7L);
+        });
+    }
 
     @Test
     @DatabaseSetup("/data-set/invoice-data.xml")
-    void getTotalAmountInvoiceBetweenDates()  {
+    void getTotalAmountInvoiceBetweenDates() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        float amount= 0;
+        float amount = 0;
         try {
-            amount = this.invoiceService.getTotalAmountInvoiceBetweenDates(dateFormat.parse("2019-08-26"),dateFormat.parse("2020-12-26"));
+            amount = this.invoiceService.getTotalAmountInvoiceBetweenDates(dateFormat.parse("2019-08-26"), dateFormat.parse("2020-12-26"));
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }

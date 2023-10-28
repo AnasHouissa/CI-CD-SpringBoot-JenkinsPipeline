@@ -53,6 +53,14 @@ class StockServiceImplTest {
 
     @Test
     @DatabaseSetup("/data-set/stock-data.xml")
+    void retrieveStockNotFound() {
+        assertThrows(NullPointerException.class, () -> {
+            this.stockService.retrieveStock(7L);
+        });
+    }
+
+    @Test
+    @DatabaseSetup("/data-set/stock-data.xml")
     void retrieveAllStock() {
         final List<Stock> allStocks = this.stockService.retrieveAllStock();
         assertEquals(allStocks.size(), 1);

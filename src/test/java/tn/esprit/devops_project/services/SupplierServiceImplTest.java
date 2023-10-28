@@ -18,6 +18,7 @@ import tn.esprit.devops_project.entities.SupplierCategory;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -56,6 +57,14 @@ class SupplierServiceImplTest {
     void retrieveSupplier() {
         final Supplier supplier = this.supplierService.retrieveSupplier(1L);
         assertEquals("00000", supplier.getCode());
+    }
+
+    @Test
+    @DatabaseSetup("/data-set/supplier-data.xml")
+    void retrieveSupplierNotFound() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            this.supplierService.retrieveSupplier(40L);
+        });
     }
 
     @Test
