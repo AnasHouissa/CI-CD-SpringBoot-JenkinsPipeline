@@ -78,8 +78,8 @@ class InvoiceServiceImplTest {
         invoice.setArchived(false);
         invoice.setIdInvoice(null);
         invoice.setAmountDiscount(50);
-        Invoice invoiceInserted =invoiceRepository.save(invoice);
-        final Invoice invoiceRetrieved= this.invoiceService.retrieveInvoice(invoiceInserted.getIdInvoice());
+        Invoice invoiceInserted = invoiceRepository.save(invoice);
+        final Invoice invoiceRetrieved = this.invoiceService.retrieveInvoice(invoiceInserted.getIdInvoice());
         assertEquals(invoiceRetrieved.getAmountInvoice(), 100f);
     }
 
@@ -112,28 +112,26 @@ class InvoiceServiceImplTest {
         this.invoiceService.assignOperatorToInvoice(1L, 1L);
         assertEquals(this.operatorService.retrieveOperator(1L).getInvoices().size(), 1);
     }
+
     @Test
     @DatabaseSetup({"/data-set/invoice-data.xml", "/data-set/operator-data.xml"})
     void assignOperatorToInvoiceNotFoundOperatorAndInvoice() {
         assertThrows(NullPointerException.class, () -> {
-            this.invoiceService.assignOperatorToInvoice(7L,1L);
+            this.invoiceService.assignOperatorToInvoice(7L, 1L);
         });
         assertThrows(NullPointerException.class, () -> {
-            this.invoiceService.assignOperatorToInvoice(1L,7L);
+            this.invoiceService.assignOperatorToInvoice(1L, 7L);
         });
     }
 
     @Test
     @DatabaseSetup("/data-set/invoice-data.xml")
-    void getTotalAmountInvoiceBetweenDates() {
+    void getTotalAmountInvoiceBetweenDates() throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        float amount = 0;
-        try {
-            amount = this.invoiceService.getTotalAmountInvoiceBetweenDates(dateFormat.parse("2019-08-26"), dateFormat.parse("2020-12-26"));
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        assertEquals(amount, 100);
+        Invoice invoice = new Invoice(5L, 20, 100, dateFormat.parse("2020-03-03"), dateFormat.parse("2020-03-03"), false, null, null);
+        invoiceRepository.save(invoice);
+        float amount = this.invoiceService.getTotalAmountInvoiceBetweenDates(dateFormat.parse("2019-08-26"), dateFormat.parse("2020-12-26"));
+        assertEquals(amount, 200);
     }
 
 }
