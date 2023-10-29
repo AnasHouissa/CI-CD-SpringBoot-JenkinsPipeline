@@ -40,11 +40,9 @@ public class StockControllerTest {
     @Test
     @DatabaseSetup("/data-set/stock-data.xml")
     public void addStock() throws Exception {
-        final Stock stock = new Stock();
-        stock.setTitle("Title");
-        // convert the stock object to JSON using JSON serializer
+        final Stock stock1 = new Stock(7,"Title 7",null);
         ObjectMapper objectMapper = new ObjectMapper();
-        String stockJson = objectMapper.writeValueAsString(stock);
+        String stockJson = objectMapper.writeValueAsString(stock1);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/stock")
                         .contentType(MediaType.APPLICATION_JSON)

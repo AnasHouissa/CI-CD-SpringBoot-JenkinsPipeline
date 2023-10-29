@@ -15,14 +15,14 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.devops_project.entities.Invoice;
 import tn.esprit.devops_project.entities.Operator;
+import tn.esprit.devops_project.repositories.InvoiceRepository;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -36,6 +36,8 @@ class InvoiceServiceImplTest {
 
     @Autowired
     private InvoiceServiceImpl invoiceService;
+    @Autowired
+    private InvoiceRepository invoiceRepository;
     @Autowired
     private OperatorServiceImpl operatorService;
 
@@ -60,14 +62,25 @@ class InvoiceServiceImplTest {
     void retrieveAllInvoices() {
         final List<Invoice> allInvoices = this.invoiceService.retrieveAllInvoices();
         assertEquals(allInvoices.size(), 1);
+        assertNull(allInvoices.get(0).getSupplier());
 
     }
 
     @Test
     @DatabaseSetup("/data-set/invoice-data.xml")
     void retrieveInvoice() {
-        final Invoice invoice = this.invoiceService.retrieveInvoice(1L);
-        assertEquals(invoice.getAmountInvoice(), 100f);
+        Invoice invoice = new Invoice();
+        invoice.setSupplier(null);
+        invoice.setAmountInvoice(100);
+        invoice.setInvoiceDetails(null);
+        invoice.setDateCreationInvoice(new Date());
+        invoice.setDateLastModificationInvoice(new Date());
+        invoice.setArchived(false);
+        invoice.setIdInvoice(null);
+        invoice.setAmountDiscount(50);
+        Invoice invoiceInserted =invoiceRepository.save(invoice);
+        final Invoice invoiceRetrieved= this.invoiceService.retrieveInvoice(invoiceInserted.getIdInvoice());
+        assertEquals(invoiceRetrieved.getAmountInvoice(), 100f);
     }
 
 

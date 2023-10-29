@@ -56,12 +56,8 @@ public class ProductControllerTest {
     @Test
     @DatabaseSetup({"/data-set/product-data.xml","/data-set/stock-data.xml"})
     public void addProduct() throws Exception {
-        Product product = new Product();
-        product.setPrice(100);
-        product.setCategory(ProductCategory.ELECTRONICS);
-        product.setTitle("Product title");
+        Product product = new Product(7L,"Product 7",100,70,ProductCategory.BOOKS,null);
 
-        // convert the Operator object to JSON using JSON serializer
         ObjectMapper objectMapper = new ObjectMapper();
         String operatorJson = objectMapper.writeValueAsString(product);
 

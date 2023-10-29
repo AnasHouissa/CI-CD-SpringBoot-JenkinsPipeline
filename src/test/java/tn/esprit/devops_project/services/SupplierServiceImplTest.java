@@ -40,6 +40,7 @@ class SupplierServiceImplTest {
         supplier.setSupplierCategory(SupplierCategory.CONVENTIONNE);
         supplier.setCode("11111");
         supplier.setLabel("label 2");
+        supplier.setInvoices(null);
         this.supplierService.addSupplier(supplier);
         assertEquals(this.supplierService.retrieveAllSuppliers().size(),2);
         assertEquals(this.supplierService.retrieveSupplier(supplier.getIdSupplier()).getCode(),"11111");

@@ -54,12 +54,8 @@ public class OperatorControllerTest {
     @Test
     @DatabaseSetup("/data-set/operator-data.xml")
     public void addOperator() throws Exception {
-        Operator operator = new Operator();
-        operator.setFname("fname2");
-        operator.setLname("lname3");
-        operator.setPassword("0000");
+        Operator operator = new Operator(7L,"fname2","lname3","0000",null);
 
-        // convert the Operator object to JSON using JSON serializer
         ObjectMapper objectMapper = new ObjectMapper();
         String operatorJson = objectMapper.writeValueAsString(operator);
 

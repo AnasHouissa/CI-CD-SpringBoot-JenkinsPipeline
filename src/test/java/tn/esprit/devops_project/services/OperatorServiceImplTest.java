@@ -37,10 +37,13 @@ class OperatorServiceImplTest {
     @Test
     @DatabaseSetup("/data-set/operator-data.xml")
     void addOperator() {
+        final Operator op2 = new Operator(7L,"fname 7","lname 7","0000",null);
         final Operator op = new Operator();
         op.setFname("Fname 2");
+        op.setInvoices(null);
         this.operatorService.addOperator(op);
-        assertEquals(this.operatorService.retrieveAllOperators().size(),2);
+        this.operatorService.addOperator(op2);
+        assertEquals(this.operatorService.retrieveAllOperators().size(),3);
         assertEquals(this.operatorService.retrieveOperator(op.getIdOperateur()).getFname(),"Fname 2");
     }
 

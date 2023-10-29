@@ -20,8 +20,7 @@ import tn.esprit.devops_project.entities.Stock;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -45,9 +44,11 @@ class ProductServiceImplTest {
         product.setCategory(ProductCategory.CLOTHING);
         product.setPrice(20f);
         product.setQuantity(30);
+        product.setStock(null);
         this.productService.addProduct(product,1L);
         assertEquals(this.productService.retreiveAllProduct().size(),2);
         assertEquals(this.productService.retrieveProduct(product.getIdProduct()).getTitle(),"Product 2");
+        assertNotNull(this.productService.retrieveProduct(product.getIdProduct()).getStock());
     }
 
     @Test

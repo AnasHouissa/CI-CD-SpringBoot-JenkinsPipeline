@@ -45,10 +45,8 @@ public class SupplierControllerTest {
     @Test
     @DatabaseSetup("/data-set/supplier-data.xml")
     public void addSupplier() throws Exception {
-        Supplier supplier = new Supplier();
-        supplier.setSupplierCategory(SupplierCategory.CONVENTIONNE);
-        supplier.setCode("azerty");
-        supplier.setLabel("label b");
+        final Supplier supplier= new Supplier(7L,"code","label",SupplierCategory.CONVENTIONNE,null);
+
         // convert the supplier object to JSON using JSON serializer
         ObjectMapper objectMapper = new ObjectMapper();
         String supplierJson = objectMapper.writeValueAsString(supplier);
