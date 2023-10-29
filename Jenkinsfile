@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     stages {
-            stage('Build'){
+            stage('Build Backend'){
                     steps {
                         git 'https://github.com/AnasHouissa/DevopsProjectBackend.git'
                         sh 'chmod +x mvnw'
@@ -11,7 +11,7 @@ pipeline {
                     }
             }
 
-            stage('Test'){
+            stage('Test Backend'){
                      steps {
                               sh './mvnw test'
 
