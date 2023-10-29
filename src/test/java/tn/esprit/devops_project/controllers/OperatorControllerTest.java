@@ -1,4 +1,6 @@
 package tn.esprit.devops_project.controllers;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.jupiter.api.Test;
@@ -17,9 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import tn.esprit.devops_project.entities.Operator;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -30,55 +30,63 @@ import java.util.Date;
         DbUnitTestExecutionListener.class})
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class InvoiceControllerTest {
+public class OperatorControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    @DatabaseSetup("/data-set/invoice-data.xml")
-    public void testGetInvoices() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/invoice"))
+    @DatabaseSetup("/data-set/operator-data.xml")
+    public void getOperators() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/operator"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    @DatabaseSetup("/data-set/invoice-data.xml")
-    public void testRetrieveInvoice() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/invoice/" + 1L))
+    @DatabaseSetup("/data-set/operator-data.xml")
+    public void retrieveOperator() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/operator/1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    @DatabaseSetup("/data-set/invoice-data.xml")
-    public void testCancelInvoice() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/invoice/" + 1L))
+    @DatabaseSetup("/data-set/operator-data.xml")
+    public void addOperator() throws Exception {
+        Operator operator = new Operator();
+        operator.setFname("fname2");
+        operator.setLname("lname3");
+        operator.setPassword("0000");
+
+        // convert the Operator object to JSON using JSON serializer
+        ObjectMapper objectMapper = new ObjectMapper();
+        String operatorJson = objectMapper.writeValueAsString(operator);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/operator")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(operatorJson))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    @DatabaseSetup({"/data-set/invoice-data.xml","/data-set/supplier-data.xml"})
-    public void testGetInvoicesBySupplier() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/invoice/supplier/" + 1L))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
-    }
-
-    @Test
-    @DatabaseSetup({"/data-set/invoice-data.xml","/data-set/operator-data.xml"})
-    public void testAssignOperatorToInvoice() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/invoice/operator/" + 1L + "/" + 1L))
+    @DatabaseSetup("/data-set/operator-data.xml")
+    public void removeOperator() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/operator/1"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    @DatabaseSetup("/data-set/invoice-data.xml")
-    public void testGetTotalAmountInvoiceBetweenDates() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/invoice/price/2009-05-05/2022-05-05"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+    @DatabaseSetup("/data-set/operator-data.xml")
+    public void modifyOperator() throws Exception {
+        Operator operator = new Operator();
+        operator.setIdOperateur(1L);
+        operator.setFname("fname5");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String operatorJson = objectMapper.writeValueAsString(operator);
+        mockMvc.perform(MockMvcRequestBuilders.put("/operator")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(operatorJson))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

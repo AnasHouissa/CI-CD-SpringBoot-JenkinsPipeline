@@ -41,7 +41,7 @@ class OperatorServiceImplTest {
         op.setFname("Fname 2");
         this.operatorService.addOperator(op);
         assertEquals(this.operatorService.retrieveAllOperators().size(),2);
-        assertEquals(this.operatorService.retrieveOperator(2L).getFname(),"Fname 2");
+        assertEquals(this.operatorService.retrieveOperator(op.getIdOperateur()).getFname(),"Fname 2");
     }
 
     @Test

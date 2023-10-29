@@ -85,7 +85,7 @@ class SupplierServiceImplTest {
         final Supplier supplier = supplierService.retrieveSupplier(1L);
         supplier.setLabel("label 0");
         this.supplierService.updateSupplier(supplier);
-        assertEquals(this.supplierService.retrieveSupplier(1L).getLabel(),"label 0");
+        assertEquals(this.supplierService.retrieveSupplier(supplier.getIdSupplier()).getLabel(),"label 0");
     }
 
 

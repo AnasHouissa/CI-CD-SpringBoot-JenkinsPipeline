@@ -1,4 +1,6 @@
 package tn.esprit.devops_project.controllers;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.jupiter.api.Test;
@@ -17,67 +19,51 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import tn.esprit.devops_project.entities.Stock;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
+@TestExecutionListeners({
+        DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class,
-        DbUnitTestExecutionListener.class})
+        DbUnitTestExecutionListener.class
+})
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class InvoiceControllerTest {
+public class StockControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    @DatabaseSetup("/data-set/invoice-data.xml")
-    public void testGetInvoices() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/invoice"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
-    }
+    @DatabaseSetup("/data-set/stock-data.xml")
+    public void addStock() throws Exception {
+        final Stock stock = new Stock();
+        stock.setTitle("Title");
+        // convert the stock object to JSON using JSON serializer
+        ObjectMapper objectMapper = new ObjectMapper();
+        String stockJson = objectMapper.writeValueAsString(stock);
 
-    @Test
-    @DatabaseSetup("/data-set/invoice-data.xml")
-    public void testRetrieveInvoice() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/invoice/" + 1L))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
-    }
-
-    @Test
-    @DatabaseSetup("/data-set/invoice-data.xml")
-    public void testCancelInvoice() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/invoice/" + 1L))
+        mockMvc.perform(MockMvcRequestBuilders.post("/stock")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(stockJson))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    @DatabaseSetup({"/data-set/invoice-data.xml","/data-set/supplier-data.xml"})
-    public void testGetInvoicesBySupplier() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/invoice/supplier/" + 1L))
+    @DatabaseSetup("/data-set/stock-data.xml")
+    public void retrieveStock() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/stock/1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    @DatabaseSetup({"/data-set/invoice-data.xml","/data-set/operator-data.xml"})
-    public void testAssignOperatorToInvoice() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/invoice/operator/" + 1L + "/" + 1L))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
-
-    @Test
-    @DatabaseSetup("/data-set/invoice-data.xml")
-    public void testGetTotalAmountInvoiceBetweenDates() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/invoice/price/2009-05-05/2022-05-05"))
+    @DatabaseSetup("/data-set/stock-data.xml")
+    public void retrieveAllStock() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/stock"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }

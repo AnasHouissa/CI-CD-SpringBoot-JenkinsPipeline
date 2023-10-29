@@ -1,4 +1,6 @@
 package tn.esprit.devops_project.controllers;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.jupiter.api.Test;
@@ -17,9 +19,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import tn.esprit.devops_project.entities.Operator;
+import tn.esprit.devops_project.entities.Product;
+import tn.esprit.devops_project.entities.ProductCategory;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -30,54 +32,64 @@ import java.util.Date;
         DbUnitTestExecutionListener.class})
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class InvoiceControllerTest {
+public class ProductControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    @DatabaseSetup("/data-set/invoice-data.xml")
-    public void testGetInvoices() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/invoice"))
+    @DatabaseSetup("/data-set/product-data.xml")
+    public void retreiveAllProduct() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/product"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    @DatabaseSetup("/data-set/invoice-data.xml")
-    public void testRetrieveInvoice() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/invoice/" + 1L))
+    @DatabaseSetup("/data-set/product-data.xml")
+    public void retrieveProduct() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/product/1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    @DatabaseSetup("/data-set/invoice-data.xml")
-    public void testCancelInvoice() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/invoice/" + 1L))
+    @DatabaseSetup({"/data-set/product-data.xml","/data-set/stock-data.xml"})
+    public void addProduct() throws Exception {
+        Product product = new Product();
+        product.setPrice(100);
+        product.setCategory(ProductCategory.ELECTRONICS);
+        product.setTitle("Product title");
+
+        // convert the Operator object to JSON using JSON serializer
+        ObjectMapper objectMapper = new ObjectMapper();
+        String operatorJson = objectMapper.writeValueAsString(product);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/product/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(operatorJson))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    @DatabaseSetup({"/data-set/invoice-data.xml","/data-set/supplier-data.xml"})
-    public void testGetInvoicesBySupplier() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/invoice/supplier/" + 1L))
+    @DatabaseSetup("/data-set/product-data.xml")
+    public void deleteProduct() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/product/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @DatabaseSetup({"/data-set/product-data.xml","/data-set/stock-data.xml"})
+    public void retreiveProductStock() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/product/stock/1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test
-    @DatabaseSetup({"/data-set/invoice-data.xml","/data-set/operator-data.xml"})
-    public void testAssignOperatorToInvoice() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/invoice/operator/" + 1L + "/" + 1L))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
-
-    @Test
-    @DatabaseSetup("/data-set/invoice-data.xml")
-    public void testGetTotalAmountInvoiceBetweenDates() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/invoice/price/2009-05-05/2022-05-05"))
+    @DatabaseSetup("/data-set/product-data.xml")
+    public void retrieveProductByCategory() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/productCategory/CLOTHING"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }

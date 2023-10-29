@@ -34,7 +34,7 @@ public class ProductController {
         return productService.retreiveProductStock(id);
     }
 
-    @GetMapping("/productCategoy/{category}")
+    @GetMapping("/productCategory/{category}")
     List<Product> retrieveProductByCategory(@PathVariable ProductCategory category){
         return productService.retrieveProductByCategory(category);
     }
