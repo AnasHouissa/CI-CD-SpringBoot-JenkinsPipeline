@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  db:
+    image: mysql
+    container_name: mysqdb
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: devops   
+      MYSQL_USER: devops
+      MYSQL_PASSWORD: devops
+    ports:
+      - 3306:3306
+    volumes:
+     - databaseData:/var/lib/mysql
+    networks:
+     - backendNetwork
+     
+  backend:
+    image: houissa1998/devops_back_end
+    container_name: springbootapp
+    ports:
+      - 8082:8082
+    depends_on:
+      - db
+    networks:
+      - backendNetwork
+      - frontendNetwork
+      
+  frontend:
+    image: houissa1998/devops_front_end
+    container_name: angularapp
+    ports: 
+      - 80:4201
+    depends_on:
+      - backend
+    networks:
+      - frontendNetwork
+
+
+volumes:
+  databaseData:
+  
+networks:
+  backendNetwork:
+  frontendNetwork:
