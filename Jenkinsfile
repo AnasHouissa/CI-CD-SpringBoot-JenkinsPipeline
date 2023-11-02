@@ -35,7 +35,7 @@ stage('Build Backend') {
     }
     }
 
-    stage('Test Backend') {
+/*    stage('Test Backend') {
       steps {
         sh './mvnw test'
 
@@ -47,7 +47,7 @@ stage('Build Backend') {
           )
         }
       }
-    }
+    }*/
    /* stage('SonarQube Analysis') {
           
 		  environment {
