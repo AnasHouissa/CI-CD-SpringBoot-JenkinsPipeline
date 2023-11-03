@@ -6,7 +6,7 @@ import tn.esprit.devops_project.entities.Supplier;
 import tn.esprit.devops_project.services.Iservices.ISupplierService;
 import java.util.List;
 
-@CrossOrigin(origins ="https://frontend:80",allowCredentials="true")
+@CrossOrigin
 @RestController
 @AllArgsConstructor
 public class SupplierController {
