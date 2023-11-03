@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins ="https://frontend:80",allowCredentials="true")
 public class ProductController {
 
     private final IProductService productService;
