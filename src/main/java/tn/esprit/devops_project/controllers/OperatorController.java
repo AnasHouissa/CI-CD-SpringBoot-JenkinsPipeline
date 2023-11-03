@@ -6,7 +6,7 @@ import tn.esprit.devops_project.entities.Operator;
 import tn.esprit.devops_project.services.Iservices.IOperatorService;
 
 import java.util.List;
-@CrossOrigin(origins ="https://frontend:80",allowCredentials="true")
+@CrossOrigin
 @RestController
 @AllArgsConstructor
 public class OperatorController {
