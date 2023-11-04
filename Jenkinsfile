@@ -98,14 +98,14 @@ stage('Build Backend') {
         }
         success {            
             mail to :'anashouissa@gmail.com',
-            subject : 'Successful Jenkins Build',
-            body : 'Great news! The Jenkins build is a success.',
+            subject : 'Successful Jenkins Build Of The Backend',
+            body : 'Great news! The Jenkins build of the spring boot backend is a success.',
             from : 'fastyappesprit@gmail.com'
         }
         failure {
             mail to :'anashouissa@gmail.com',
             subject : 'Jenkins Build Failed',
-            body : 'Unfortunately, the Jenkins build has encountered an issue and failed.',
+            body : 'Unfortunately, the Jenkins build of the spring boot backend has encountered an issue and failed.',
             from : 'fastyappesprit@gmail.com'
         }
     }
