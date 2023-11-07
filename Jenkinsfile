@@ -23,7 +23,7 @@ stage('Build Backend') {
 
     stage('Test Backend') {
       steps {
-        sh './mvnw test'
+        sh 'mvn test'
 
       }
       post {
