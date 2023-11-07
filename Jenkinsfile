@@ -47,20 +47,20 @@ stage('Build Backend') {
         }
        }
   }
-	  /*
+	  
     stage("Push Backend Image to Docker Hub"){
       steps {
        sh 'docker push  houissa1998/devops_back_end:latest'
     }
-    }*/
+    }
 
-/*stage("Running Docker compose"){
+stage("Running Docker compose"){
       steps {
 	sh 'docker compose up -d'	
     }
     }
-	*/  
-   /* stage('SonarQube Analysis') {
+	 
+    stage('SonarQube Analysis') {
           
 		  environment {
              scannerHome = tool 'sonarscanner'
@@ -84,8 +84,8 @@ stage('Build Backend') {
           }
         }
 
-	  */
-        stage('Deploy Backend to Nexus') {
+	  
+ /*       stage('Deploy Backend to Nexus') {
                      steps {
                          nexusArtifactUploader(
                                      nexusVersion: "nexus3",
@@ -105,9 +105,9 @@ stage('Build Backend') {
 
                      }
                  }
-/*
+*/
 
-	   stage("Publish to Nexus Repository Manager") {
+	   stage("Deploy Artifact to Nexus") {
             steps {
                 script {
                     pom = readMavenPom file: "pom.xml";
@@ -141,7 +141,7 @@ stage('Build Backend') {
                     }
                 }
             }
-        }*/
+        }
 	
   }
   post{
