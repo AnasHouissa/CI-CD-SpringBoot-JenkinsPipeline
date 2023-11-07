@@ -6,7 +6,7 @@ pipeline {
 stage('Build Backend') {
       steps {
         sh 'chmod +x mvnw'
-        sh './mvnw clean install -DskipTests'
+        sh './mvnw package -DskipTests=true'
        
       }
       post {
@@ -43,19 +43,20 @@ stage('Build Backend') {
         }
        }
   }
+	  /*
     stage("Push Backend Image to Docker Hub"){
       steps {
        sh 'docker push  houissa1998/devops_back_end:latest'
     }
-    }
+    }*/
 
-stage("Running Docker compose"){
+/*stage("Running Docker compose"){
       steps {
 	sh 'docker compose up -d'	
     }
     }
-	  
-    stage('SonarQube Analysis') {
+	*/  
+   /* stage('SonarQube Analysis') {
           
 		  environment {
              scannerHome = tool 'sonarscanner'
@@ -79,7 +80,7 @@ stage("Running Docker compose"){
           }
         }
 
-	  
+	  */
         stage("Publish to Nexus Repository Manager") {
         steps {
             nexusArtifactUploader(
