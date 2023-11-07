@@ -31,7 +31,7 @@ stage('Build Backend') {
     stage("Push Backend Image to Docker Hub"){
       steps {
        sh 'docker push  houissa1998/devops_back_end:latest'
-
+	sh 'docker compose up -d'	
     }
     }
 
