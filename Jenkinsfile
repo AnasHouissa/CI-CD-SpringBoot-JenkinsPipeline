@@ -10,7 +10,7 @@ tools {
 stage('Build Backend') {
       steps {
         sh 'chmod +x mvnw'
-        sh 'mvn package -DskipTests=true'
+        sh 'mvn deploy -DskipTests=true'
        
       }
       post {
@@ -123,7 +123,7 @@ stage("Running Docker compose"){
                             nexusUrl: "192.168.33.10:8081",
                             groupId: pom.groupId,
                             version: pom.version,
-                            repository: "maven-nexus-repo",
+                            repository: "maven-releases",
                             credentialsId: "NexusUserCreds",
                             artifacts: [
                                 [artifactId: pom.artifactId,
