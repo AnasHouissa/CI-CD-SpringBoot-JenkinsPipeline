@@ -34,6 +34,7 @@ services:
   frontend:
     image: houissa1998/devops_front_end:latest
     container_name: angularapp
+    restart: always
     ports:
       - 80:80
     depends_on:
