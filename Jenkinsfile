@@ -2,11 +2,15 @@ pipeline {
 
   agent any
 
+tools {
+        maven "Maven"
+}
+
   stages {
 stage('Build Backend') {
       steps {
         sh 'chmod +x mvnw'
-        sh './mvnw package -DskipTests=true'
+        sh 'mvn package -DskipTests=true'
        
       }
       post {
@@ -81,25 +85,43 @@ stage('Build Backend') {
         }
 
 	  */
-        stage("Publish to Nexus Repository Manager") {
-        steps {
-            nexusArtifactUploader(
-                            nexusVersion: "nexus3",
+        
+
+	   stage("Publish to Nexus Repository Manager") {
+            steps {
+                script {
+                    pom = readMavenPom file: "pom.xml";
+                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
+                    artifactPath = filesByGlob[0].path;
+                    artifactExists = fileExists artifactPath;
+                    if(artifactExists) {
+                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
+                        nexusArtifactUploader(
+                            nexusVersion: "nexus3,
                             protocol: "http",
                             nexusUrl: "192.168.33.10:8081",
-                            groupId: "tn.esprit",
-                            version: "1.0",
-                            repository: "maven-releases",
+                            groupId: pom.groupId,
+                            version: pom.version,
+                            repository: "maven-nexus-repo",
                             credentialsId: "NexusUserCreds",
                             artifacts: [
-                                [artifactId: "DevOps_Project",
+                                [artifactId: pom.artifactId,
                                 classifier: '',
-                                file: "/var/lib/jenkins/.m2/repository/tn/esprit/DevOps_Project/1.0/DevOps_Project-1.0.jar",
-                                type: "jar"]
+                                file: artifactPath,
+                                type: pom.packaging],
+                                [artifactId: pom.artifactId,
+                                classifier: '',
+                                file: "pom.xml",
+                                type: "pom"]
                             ]
                         );
+                    } else {
+                        error "*** File: ${artifactPath}, could not be found";
+                    }
+                }
+            }
         }
-    }
 	
   }
   post{
