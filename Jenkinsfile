@@ -9,8 +9,7 @@ tools {
   stages {
 stage('Build Backend') {
       steps {
-        sh 'chmod +x mvnw'
-        sh 'mvn deploy -DskipTests=true'
+        sh 'mvn clean install'
        
       }
       post {
@@ -36,10 +35,19 @@ stage('Build Backend') {
       }
     }
 
+
+
+	  stage('Deploy Artifact to nexus') {
+      steps {
+               sh 'mvn deploy -DskipTests=true'
+       
+      }
+     
+    }
+    
 	  stage("Docker build backend"){
          steps {
          sh 'docker build -t devops_back_end .'
-         sh 'docker image list'
          sh 'docker tag devops_back_end houissa1998/devops_back_end:latest'
         
         withCredentials([string(credentialsId: 'DockerhubCred', variable: 'PASSWORD')]) {
@@ -82,65 +90,6 @@ stage("Running Docker compose"){
                waitForQualityGate abortPipeline: true
             }
           }
-        }
-
-	  
- /*       stage('Deploy Backend to Nexus') {
-                     steps {
-                         nexusArtifactUploader(
-                                     nexusVersion: "nexus3",
-                                     protocol: "http",
-                                     nexusUrl: "192.168.33.10:8081",
-                                     groupId: "tn.esprit",
-                                     version: "1.0",
-                                     repository: "maven-releases",
-                                     credentialsId: "NexusUserCreds",
-                                     artifacts: [
-                                         [artifactId: "DevOps_Project",
-                                         classifier: '',
-                                         file: "/var/lib/jenkins/.m2/repository/tn/esprit/DevOps_Project/1.0/DevOps_Project-1.0.jar",
-                                         type: "jar"]
-                                     ]
-                                 );
-
-                     }
-                 }
-*/
-
-	   stage("Deploy Artifact to Nexus") {
-            steps {
-                script {
-                    pom = readMavenPom file: "pom.xml";
-                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
-                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
-                    artifactPath = filesByGlob[0].path;
-                    artifactExists = fileExists artifactPath;
-                    if(artifactExists) {
-                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
-                        nexusArtifactUploader(
-                            nexusVersion: "nexus3",
-                            protocol: "http",
-                            nexusUrl: "192.168.33.10:8081",
-                            groupId: pom.groupId,
-                            version: pom.version,
-                            repository: "maven-releases",
-                            credentialsId: "NexusUserCreds",
-                            artifacts: [
-                                [artifactId: pom.artifactId,
-                                classifier: '',
-                                file: artifactPath,
-                                type: pom.packaging],
-                                [artifactId: pom.artifactId,
-                                classifier: '',
-                                file: "pom.xml",
-                                type: "pom"]
-                            ]
-                        );
-                    } else {
-                        error "*** File: ${artifactPath}, could not be found";
-                    }
-                }
-            }
         }
 	
   }
