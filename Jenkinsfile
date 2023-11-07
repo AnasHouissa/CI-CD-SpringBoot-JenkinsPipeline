@@ -78,7 +78,7 @@ stage("Running Docker compose"){
             }
           }
         }
-      /*  stage("Publish to Nexus Repository Manager") {
+        stage("Publish to Nexus Repository Manager") {
         steps {
             nexusArtifactUploader(
                             nexusVersion: "nexus3",
@@ -96,7 +96,7 @@ stage("Running Docker compose"){
                             ]
                         );
         }
-    }*/
+    }
 	
   }
   post{
