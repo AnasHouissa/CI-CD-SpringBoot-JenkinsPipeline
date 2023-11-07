@@ -85,7 +85,27 @@ stage('Build Backend') {
         }
 
 	  */
-        
+        stage('Deploy Backend to Nexus') {
+                     steps {
+                         nexusArtifactUploader(
+                                     nexusVersion: "nexus3",
+                                     protocol: "http",
+                                     nexusUrl: "192.168.33.10:8081",
+                                     groupId: "tn.esprit",
+                                     version: "1.0",
+                                     repository: "maven-releases",
+                                     credentialsId: "NexusUserCreds",
+                                     artifacts: [
+                                         [artifactId: "DevOps_Project",
+                                         classifier: '',
+                                         file: "/var/lib/jenkins/.m2/repository/tn/esprit/DevOps_Project/1.0/DevOps_Project-1.0.jar",
+                                         type: "jar"]
+                                     ]
+                                 );
+
+                     }
+                 }
+/*
 
 	   stage("Publish to Nexus Repository Manager") {
             steps {
@@ -121,7 +141,7 @@ stage('Build Backend') {
                     }
                 }
             }
-        }
+        }*/
 	
   }
   post{
