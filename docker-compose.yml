@@ -1,46 +1,45 @@
 version: '3'
-
 services:
   db:
     image: mysql
-    container_name: mysqdb
+    container_name: mysqldb
     environment:
-      MYSQL_ROOT_PASSWORD: admin
-      MYSQL_DATABASE: devops   
-      MYSQL_USER: devops
-      MYSQL_PASSWORD: devops
+      MYSQL_DATABASE: devops
+      MYSQL_ROOT_PASSWORD: devops
     ports:
       - 3306:3306
+    restart: always
     volumes:
      - databaseData:/var/lib/mysql
     networks:
      - backendNetwork
-     
+
   backend:
-    image: houissa1998/devops_back_end
+    image: houissa1998/devops_back_end:latest
     container_name: springbootapp
+    restart: always
     ports:
       - 8082:8082
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/devops?allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: devops
+      SPRING_JPA_SHOW-sql: true
+
     depends_on:
       - db
     networks:
       - backendNetwork
-      - frontendNetwork
-      
+
   frontend:
-    image: houissa1998/devops_front_end
+    image: houissa1998/devops_front_end:latest
     container_name: angularapp
-    ports: 
-      - 80:4201
+    ports:
+      - 80:80
     depends_on:
       - backend
-    networks:
-      - frontendNetwork
-
-
 volumes:
   databaseData:
-  
+
 networks:
   backendNetwork:
-  frontendNetwork:
