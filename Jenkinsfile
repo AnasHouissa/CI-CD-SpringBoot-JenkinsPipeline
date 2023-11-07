@@ -51,7 +51,7 @@ stage('Build Backend') {
 
 stage("Running Docker compose"){
       steps {
-	//sh 'docker compose up -d'	
+	sh 'docker compose up -d'	
     }
     }
 	  
@@ -78,6 +78,8 @@ stage("Running Docker compose"){
             }
           }
         }
+
+	  
         stage("Publish to Nexus Repository Manager") {
         steps {
             nexusArtifactUploader(
