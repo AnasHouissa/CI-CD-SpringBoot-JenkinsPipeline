@@ -98,7 +98,7 @@ stage('Build Backend') {
                     if(artifactExists) {
                         echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
                         nexusArtifactUploader(
-                            nexusVersion: "nexus3,
+                            nexusVersion: "nexus3",
                             protocol: "http",
                             nexusUrl: "192.168.33.10:8081",
                             groupId: pom.groupId,
