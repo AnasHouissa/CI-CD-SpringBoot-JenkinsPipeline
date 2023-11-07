@@ -17,23 +17,6 @@ stage('Build Backend') {
     }
     
     
-      stage("Docker build backend"){
-         steps {
-         sh 'docker build -t devops_back_end .'
-         sh 'docker image list'
-         sh 'docker tag devops_back_end houissa1998/devops_back_end:latest'
-        
-        withCredentials([string(credentialsId: 'DockerhubCred', variable: 'PASSWORD')]) {
-            sh 'docker login -u houissa1998 -p $PASSWORD'
-        }
-       }
-  }
-    stage("Push Backend Image to Docker Hub"){
-      steps {
-       sh 'docker push  houissa1998/devops_back_end:latest'
-	sh 'docker compose up -d'	
-    }
-    }
 
     stage('Test Backend') {
       steps {
@@ -48,7 +31,25 @@ stage('Build Backend') {
         }
       }
     }
-   /* stage('SonarQube Analysis') {
+
+	  stage("Docker build backend"){
+         steps {
+         sh 'docker build -t devops_back_end .'
+         sh 'docker image list'
+         sh 'docker tag devops_back_end houissa1998/devops_back_end:latest'
+        
+        withCredentials([string(credentialsId: 'DockerhubCred', variable: 'PASSWORD')]) {
+            sh 'docker login -u houissa1998 -p $PASSWORD'
+        }
+       }
+  }
+    stage("Push Backend Image to Docker Hub"){
+      steps {
+       sh 'docker push  houissa1998/devops_back_end:latest'
+	//sh 'docker compose up -d'	
+    }
+    }
+    stage('SonarQube Analysis') {
           
 		  environment {
              scannerHome = tool 'sonarscanner'
@@ -70,7 +71,7 @@ stage('Build Backend') {
                waitForQualityGate abortPipeline: true
             }
           }
-        }*/
+        }
       /*  stage("Publish to Nexus Repository Manager") {
         steps {
             nexusArtifactUploader(
